@@ -1,0 +1,197 @@
+<div class="task-list-page">
+  <div class="page-header">
+    <div>
+      <h1>Tasks</h1>
+      <p class="text-muted">Search, sort, and manage every task in one place.</p>
+    </div>
+    <a
+      routerLink="/tasks/new"
+      class="btn btn-primary"
+      [class.disabled]="!canManageTasks()"
+      [attr.aria-disabled]="!canManageTasks() ? true : null"
+      [attr.tabindex]="!canManageTasks() ? -1 : null"
+      [title]="canManageTasks() ? '' : 'Only Admin/Manager can create tasks'"
+      (click)="onManageTaskClick($event)"
+    >
+      <i class="bi bi-plus-lg me-1"></i> New task
+    </a>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-bar">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search by title or description..."
+        (input)="onSearchInput($any($event.target).value)"
+      />
+    </div>
+
+    <div class="sort-controls">
+      <label class="sort-label">Filter</label>
+      <select class="form-select" [value]="statusFilter()" (change)="onStatusFilterChange($any($event.target).value)">
+        <option value="">All statuses</option>
+        <option value="ToDo">To Do</option>
+        <option value="InProgress">In Progress</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+      <select class="form-select" [value]="priorityFilter()" (change)="onPriorityFilterChange($any($event.target).value)">
+        <option value="">All priorities</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+
+      <label class="sort-label ms-2">Sort by</label>
+      <select class="form-select" [value]="sortBy()" (change)="onSortFieldChange($any($event.target).value)">
+        <option value="dueDate">Due date</option>
+        <option value="title">Title</option>
+      </select>
+      <select class="form-select" [value]="sortDescending() ? 'true' : 'false'" (change)="onSortDirectionChange($any($event.target).value)">
+        <option value="false">Ascending</option>
+        <option value="true">Descending</option>
+      </select>
+    </div>
+  </div>
+
+  @if (loadError()) {
+    <div class="alert alert-danger">{{ loadError() }}</div>
+  }
+
+  <div class="table-card">
+    @if (isLoading()) {
+      <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary"></div>
+      </div>
+    } @else if (tasks().length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <p>No tasks match your search.</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th role="button" (click)="setSort('title')">Title <i class="bi" [class]="sortIcon('title')"></i></th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Assigned to</th>
+              <th role="button" (click)="setSort('dueDate')">Due date <i class="bi" [class]="sortIcon('dueDate')"></i></th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (task of tasks(); track task.taskId) {
+              <tr>
+                <td>
+                  <div class="task-title">{{ task.title }}</div>
+                  @if (task.description) {
+                    <div class="task-desc">{{ task.description }}</div>
+                  }
+                </td>
+                <td><span class="badge priority-{{ task.priority.toLowerCase() }}">{{ task.priority }}</span></td>
+                <td><span class="badge status-{{ task.status.toLowerCase() }}">{{ task.status }}</span></td>
+                <td>{{ task.assignedToName || 'Unassigned' }}</td>
+                <td>{{ task.dueDate | date: 'mediumDate' }}</td>
+                <td class="text-end">
+                  <a
+                    [routerLink]="['/tasks', task.taskId, 'edit']"
+                    class="btn btn-sm btn-icon"
+                    [class.disabled]="!canManageTasks()"
+                    [attr.aria-disabled]="!canManageTasks() ? true : null"
+                    [attr.tabindex]="!canManageTasks() ? -1 : null"
+                    [title]="canManageTasks() ? 'Edit' : 'Only Admin/Manager can edit tasks'"
+                    (click)="onManageTaskClick($event)"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <button
+                    class="btn btn-sm btn-icon btn-icon-danger"
+                    [title]="canManageTasks() ? 'Delete' : 'Only Admin/Manager can delete tasks'"
+                    [disabled]="!canManageTasks()"
+                    (click)="confirmDelete(task)"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <div class="pager-info">
+          Showing {{ rangeStart() }}–{{ rangeEnd() }} of {{ totalCount() }} tasks
+        </div>
+
+        <div class="pager-size">
+          <label for="pageSize">Rows</label>
+          <select
+            id="pageSize"
+            class="form-select form-select-sm"
+            [value]="pageSize()"
+            (change)="onPageSizeChange($any($event.target).value)"
+          >
+            @for (size of pageSizeOptions; track size) {
+              <option [value]="size">{{ size }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="pager-buttons">
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="page() === 1"
+            (click)="goToPage(page() - 1)"
+            title="Previous page"
+          >
+            <i class="bi bi-chevron-left"></i>
+          </button>
+
+          @for (n of pageNumbers(); track n) {
+            <button
+              class="btn btn-sm"
+              [class.btn-primary]="n === page()"
+              [class.btn-outline-secondary]="n !== page()"
+              (click)="goToPage(n)"
+            >
+              {{ n }}
+            </button>
+          }
+
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            [disabled]="page() === totalPages()"
+            (click)="goToPage(page() + 1)"
+            title="Next page"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@if (taskPendingDelete(); as task) {
+  <div class="modal-backdrop-custom">
+    <div class="confirm-dialog">
+      <div class="confirm-icon"><i class="bi bi-exclamation-triangle"></i></div>
+      <h3>Delete this task?</h3>
+      <p>"{{ task.title }}" will be removed from your task list. This can't be undone from the app.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-light" (click)="cancelDelete()" [disabled]="isDeleting()">Cancel</button>
+        <button class="btn btn-danger" (click)="deleteConfirmed()" [disabled]="isDeleting()">
+          @if (isDeleting()) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          }
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}

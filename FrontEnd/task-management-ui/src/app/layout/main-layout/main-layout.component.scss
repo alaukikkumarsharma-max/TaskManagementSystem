@@ -1,0 +1,133 @@
+.app-navbar {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #1f2937 !important;
+
+  i {
+    color: #4338ca;
+  }
+}
+
+.navbar-nav-links {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 2rem;
+  flex: 1;
+
+  .nav-link {
+    color: #6b7280;
+    font-weight: 500;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+
+    &.active {
+      background: #eef2ff;
+      color: #4338ca;
+    }
+
+    &:hover {
+      color: #4338ca;
+    }
+  }
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: none;
+  padding: 0.35rem 0.5rem;
+  border-radius: 10px;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #4338ca;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.user-role {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.user-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  border: 1px solid #eef0f3;
+  min-width: 220px;
+  padding: 0.75rem;
+  z-index: 1030;
+
+  hr {
+    margin: 0.5rem 0;
+  }
+}
+
+.dropdown-email {
+  font-size: 0.82rem;
+  color: #6b7280;
+  padding: 0.25rem 0.5rem;
+}
+
+.dropdown-logout {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: #b91c1c;
+  font-size: 0.88rem;
+
+  &:hover {
+    background: #fef2f2;
+  }
+}
+
+.app-main {
+  min-height: calc(100vh - 65px);
+}

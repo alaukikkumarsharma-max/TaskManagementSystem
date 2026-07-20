@@ -1,0 +1,136 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <div>
+      <h1>Welcome back, {{ firstName() }}</h1>
+      <p class="text-muted">Here's what's happening with your team's tasks today.</p>
+    </div>
+    <a
+      routerLink="/tasks/new"
+      class="btn btn-primary"
+      [class.disabled]="!canManageTasks()"
+      [attr.aria-disabled]="!canManageTasks() ? true : null"
+      [attr.tabindex]="!canManageTasks() ? -1 : null"
+      [title]="canManageTasks() ? '' : 'Only Admin/Manager can create tasks'"
+      (click)="onNewTaskClick($event)"
+    >
+      <i class="bi bi-plus-lg me-1"></i> New task
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else if (loadError()) {
+    <div class="alert alert-danger">{{ loadError() }}</div>
+  } @else {
+    <div class="stat-grid">
+      <div class="stat-card stat-total">
+        <div class="stat-icon"><i class="bi bi-list-task"></i></div>
+        <div>
+          <div class="stat-value">{{ totalCount() }}</div>
+          <div class="stat-label">Total tasks</div>
+        </div>
+      </div>
+      <div class="stat-card stat-todo">
+        <div class="stat-icon"><i class="bi bi-circle"></i></div>
+        <div>
+          <div class="stat-value">{{ toDoCount() }}</div>
+          <div class="stat-label">To do</div>
+        </div>
+      </div>
+      <div class="stat-card stat-progress">
+        <div class="stat-icon"><i class="bi bi-arrow-repeat"></i></div>
+        <div>
+          <div class="stat-value">{{ inProgressCount() }}</div>
+          <div class="stat-label">In progress</div>
+        </div>
+      </div>
+      <div class="stat-card stat-done">
+        <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+        <div>
+          <div class="stat-value">{{ completedCount() }}</div>
+          <div class="stat-label">Completed</div>
+        </div>
+      </div>
+      <div class="stat-card stat-overdue">
+        <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+        <div>
+          <div class="stat-value">{{ overdueCount() }}</div>
+          <div class="stat-label">Overdue</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+    <div class="chart-card">
+      <h2>Tasks by status</h2>
+      @if (totalCount() === 0) {
+        <div class="empty-state">
+          <i class="bi bi-pie-chart"></i>
+          <p>No tasks to chart yet.</p>
+        </div>
+      } @else {
+        <div class="chart-body">
+          <div class="donut" [style.background]="donutGradient()">
+            <div class="donut-hole">
+              <span class="donut-total">{{ totalCount() }}</span>
+              <span class="donut-caption">tasks</span>
+            </div>
+          </div>
+          <ul class="legend">
+            @for (seg of statusSegments(); track seg.label) {
+              <li>
+                <span class="legend-dot" [style.background]="seg.color"></span>
+                <span class="legend-label">{{ seg.label }}</span>
+                <span class="legend-count">{{ seg.count }} ({{ seg.percent }}%)</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+
+    <div class="recent-tasks">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Recent tasks</h2>
+        <a routerLink="/tasks" class="link">View all <i class="bi bi-arrow-right"></i></a>
+      </div>
+
+      @if (recentTasks().length === 0) {
+        <div class="empty-state">
+          <i class="bi bi-inbox"></i>
+          <p>No tasks yet. Create your first one to get started.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned to</th>
+                <th>Due date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (task of recentTasks(); track task.taskId) {
+                <tr>
+                  <td>{{ task.title }}</td>
+                  <td><span class="badge priority-{{ task.priority.toLowerCase() }}">{{ task.priority }}</span></td>
+                  <td><span class="badge status-{{ task.status.toLowerCase() }}">{{ task.status }}</span></td>
+                  <td>{{ task.assignedToName || '—' }}</td>
+                  <td>{{ task.dueDate | date: 'mediumDate' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+    </div>
+  }
+</div>

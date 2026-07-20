@@ -1,0 +1,59 @@
+:root {
+  --bs-primary: #4338ca;
+  --bs-primary-rgb: 67, 56, 202;
+  --bs-link-color: #4338ca;
+  --bs-link-hover-color: #3730a3;
+  --bs-border-radius: 0.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #f8f9fc;
+  color: #1f2937;
+  font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+// Bootstrap 5.3 themes via CSS variables - no Sass recompile needed.
+.btn-primary {
+  --bs-btn-bg: #4338ca;
+  --bs-btn-border-color: #4338ca;
+  --bs-btn-hover-bg: #3730a3;
+  --bs-btn-hover-border-color: #3730a3;
+  --bs-btn-active-bg: #312e81;
+  --bs-btn-active-border-color: #312e81;
+  --bs-btn-focus-shadow-rgb: 79, 70, 229;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #a5b4fc;
+  box-shadow: 0 0 0 0.2rem rgba(67, 56, 202, 0.15);
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.4em 0.7em;
+  border-radius: 6px;
+}
+
+// Shared across the dashboard's recent-tasks table and the full task list.
+.priority-low { background-color: #e0f2fe; color: #0369a1; }
+.priority-medium { background-color: #fef3c7; color: #b45309; }
+.priority-high { background-color: #fee2e2; color: #b91c1c; }
+
+.status-todo { background-color: #f1f5f9; color: #475569; }
+.status-inprogress { background-color: #dbeafe; color: #1d4ed8; }
+.status-completed { background-color: #dcfce7; color: #15803d; }
+.status-cancelled { background-color: #f3f4f6; color: #6b7280; }

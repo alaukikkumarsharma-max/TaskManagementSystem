@@ -1,0 +1,87 @@
+.audit-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+}
+
+.table-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+
+  .table {
+    thead th {
+      background: #f8f9fc;
+      color: #6b7280;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid #eef0f3;
+      padding: 0.85rem 1rem;
+    }
+
+    tbody td {
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #f1f3f7;
+    }
+  }
+}
+
+.action-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.action-login {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.action-created {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.action-updated {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.action-deleted {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.action-default {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #9ca3af;
+
+  i {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+}

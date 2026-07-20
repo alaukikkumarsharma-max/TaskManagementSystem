@@ -1,0 +1,105 @@
+<div class="task-form-page">
+  <div class="page-header">
+    <a routerLink="/tasks" class="back-link"><i class="bi bi-arrow-left"></i> Back to tasks</a>
+    <h1>{{ isEditMode() ? 'Edit task' : 'Create a new task' }}</h1>
+  </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-primary"></div>
+    </div>
+  } @else {
+    <div class="form-card">
+      @if (errorMessage()) {
+        <div class="alert alert-danger">{{ errorMessage() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="title">Title</label>
+          <input
+            id="title"
+            type="text"
+            class="form-control"
+            formControlName="title"
+            placeholder="e.g. Set up CI pipeline"
+            [class.is-invalid]="form.controls.title.invalid && form.controls.title.touched"
+          />
+          @if (form.controls.title.invalid && form.controls.title.touched) {
+            <div class="invalid-feedback d-block">Title is required (max 200 characters).</div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="description">Description</label>
+          <textarea
+            id="description"
+            class="form-control"
+            rows="3"
+            formControlName="description"
+            placeholder="Add any extra detail (optional)"
+          ></textarea>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="priority">Priority</label>
+            <select id="priority" class="form-select" formControlName="priority">
+              @for (p of priorities; track p) {
+                <option [ngValue]="p">{{ p }}</option>
+              }
+            </select>
+          </div>
+
+          @if (isEditMode()) {
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="status">Status</label>
+              <select id="status" class="form-select" formControlName="status">
+                @for (s of statuses; track s) {
+                  <option [ngValue]="s">{{ s }}</option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="dueDate">Due date</label>
+            <input
+              id="dueDate"
+              type="date"
+              class="form-control"
+              formControlName="dueDate"
+              [min]="minDate"
+              [class.is-invalid]="form.controls.dueDate.invalid && form.controls.dueDate.touched"
+            />
+            @if (form.controls.dueDate.invalid && form.controls.dueDate.touched) {
+              <div class="invalid-feedback d-block">Due date is required and can't be in the past.</div>
+            }
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="assignedTo">Assign to</label>
+            <select id="assignedTo" class="form-select" formControlName="assignedToUserId">
+              <option [ngValue]="null">Unassigned</option>
+              @for (user of users(); track user.userId) {
+                <option [ngValue]="user.userId">{{ user.fullName }} ({{ user.roleName }})</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a routerLink="/tasks" class="btn btn-light">Cancel</a>
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+            @if (isSaving()) {
+              <span class="spinner-border spinner-border-sm me-1"></span>
+            }
+            {{ isEditMode() ? 'Save changes' : 'Create task' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>
